@@ -89,10 +89,10 @@ function draw() {
 
 // Kontrol keyboard
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
-    else if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
-    else if (e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
-    else if (e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
+    if (e.key === 'w' && dy === 0) { dx = 0; dy = -1; }
+    else if (e.key === 's' && dy === 0) { dx = 0; dy = 1; }
+    else if (e.key === 'a' && dx === 0) { dx = -1; dy = 0; }
+    else if (e.key === 'd' && dx === 0) { dx = 1; dy = 0; }
 });
 
 // Reset game
