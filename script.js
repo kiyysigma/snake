@@ -4,6 +4,11 @@ const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
 const startBtn = document.getElementById('startBtn');
 const menu = document.getElementById('menu');
+const controls = document.getElementById('controls');  // Kontrol tombol
+const upBtn = document.getElementById('upBtn');
+const downBtn = document.getElementById('downBtn');
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
 const gameOverOverlay = document.getElementById('gameOverOverlay');
 const gameOverText = document.getElementById('gameOverText');
 const finalScore = document.getElementById('finalScore');
@@ -19,6 +24,7 @@ let dx = 0, dy = 0; // Arah gerakan
 let score = 0;
 let highScore = 0; // Variabel untuk high score
 let gameRunning = false;
+let touchStartX = 0, touchStartY = 0;  // Untuk swipe
 
 // Fungsi load high score dari localStorage
 function loadHighScore() {
@@ -43,8 +49,8 @@ function gameLoop() {
     if (!gameRunning) return;
     moveSnake();
     if (checkCollision()) {
-        saveHighScore();  // Update high score saat game over
-        showGameOver();  // Tampilkan overlay game over
+        saveHighScore();
+        showGameOver();
         return;
     }
     if (eatFood()) {
@@ -116,7 +122,7 @@ function draw() {
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
 }
 
-// Kontrol keyboard
+// Kontrol keyboard (untuk desktop)
 document.addEventListener('keydown', (e) => {
     if (!gameRunning) return;
     if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
@@ -125,15 +131,47 @@ document.addEventListener('keydown', (e) => {
     else if (e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
 });
 
+// Kontrol tombol virtual (untuk mobile)
+upBtn.addEventListener('click', () => { if (gameRunning && dy === 0) { dx = 0; dy = -1; } });
+downBtn.addEventListener('click', () => { if (gameRunning && dy === 0) { dx = 0; dy = 1; } });
+leftBtn.addEventListener('click', () => { if (gameRunning && dx === 0) { dx = -1; dy = 0; } });
+rightBtn.addEventListener('click', () => { if (gameRunning && dx === 0) { dx = 1; dy = 0; } });
+
+// Kontrol swipe (untuk mobile)
+canvas.addEventListener('touchstart', (e) => {
+    if (!gameRunning) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+canvas.addEventListener('touchend', (e) => {
+    if (!gameRunning) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    const threshold = 50;  // Minimal geser 50px
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Geser horizontal
+        if (diffX > threshold && dx === 0) { dx = 1; dy = 0; }  // Kanan
+        else if (diffX < -threshold && dx === 0) { dx = -1; dy = 0; }  // Kiri
+    } else {
+        // Geser vertikal
+        if (diffY > threshold && dy === 0) { dx = 0; dy = 1; }  // Bawah
+        else if (diffY < -threshold && dy === 0) { dx = 0; dy = -1; }  // Atas
+    }
+});
+
 // Fungsi start game
 function startGame() {
     if (gameRunning) return;
     gameRunning = true;
     startBtn.disabled = true;
     startBtn.textContent = 'Game Running...';
-    // Transisi: Sembunyikan menu, tampilkan canvas
     menu.classList.add('hidden');
     canvas.classList.add('active');
+    controls.classList.remove('hidden');  // Tampilkan kontrol
     generateFood();
     gameLoop();
 }
@@ -144,6 +182,7 @@ function showGameOver() {
     finalScore.textContent = score;
     finalHighScore.textContent = highScore;
     gameOverOverlay.classList.remove('hidden');
+    controls.classList.add('hidden');  // Sembunyikan kontrol saat game over
 }
 
 // Fungsi kembali ke menu
@@ -151,6 +190,7 @@ function backToMenu() {
     gameOverOverlay.classList.add('hidden');
     canvas.classList.remove('active');
     menu.classList.remove('hidden');
+    controls.classList.add('hidden');
     resetGame();
 }
 
