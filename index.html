@@ -2,17 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Untuk responsive mobile -->
     <title>Game Ular Sederhana</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="menu">
-        <h1>Game Ular by kiyy</h1>
+        <h1>Game Ular</h1>
         <div id="score">Skor: 0</div>
         <div id="highScore">High Score: 0</div>
         <button id="startBtn">Start Game</button>
     </div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="controls" class="hidden">  <!-- Kontrol tombol untuk mobile -->
+        <button id="upBtn">↑</button>
+        <div>
+            <button id="leftBtn">←</button>
+            <button id="rightBtn">→</button>
+        </div>
+        <button id="downBtn">↓</button>
+    </div>
     <div id="gameOverOverlay" class="hidden">
         <div id="gameOverContent">
             <h2 id="gameOverText">Game Over!</h2>
