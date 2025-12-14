@@ -6,7 +6,7 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     padding: 20px;
-    transition: all 0.5s ease; /* Transisi umum */
+    transition: all 0.5s ease;
 }
 
 #menu {
@@ -56,11 +56,64 @@ body {
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 0.5s ease, transform 0.5s ease;
+    max-width: 100%;  /* Responsive */
+    height: auto;
 }
 
 #gameCanvas.active {
     opacity: 1;
     transform: scale(1);
+}
+
+/* Kontrol untuk mobile */
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    transition: opacity 0.5s ease;
+}
+
+#controls.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#controls button {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    margin: 5px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#controls button:hover {
+    background-color: #1976D2;
+}
+
+#controls div {
+    display: flex;
+}
+
+/* Media query untuk mobile */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    #gameCanvas {
+        width: 90vw;  /* Lebar 90% viewport */
+        height: 90vw;
+    }
+    #controls {
+        display: flex;  /* Selalu tampil di mobile saat game aktif */
+    }
+    #controls.hidden {
+        display: none;  /* Sembunyikan jika tidak aktif */
+    }
 }
 
 #gameOverOverlay {
@@ -92,7 +145,7 @@ body {
 
 #gameOverText {
     font-size: 36px;
-    animation: bounce 1s ease-in-out; /* Animasi teks */
+    animation: bounce 1s ease-in-out;
 }
 
 @keyframes bounce {
