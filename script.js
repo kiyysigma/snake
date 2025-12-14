@@ -1,8 +1,14 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
-const highScoreElement = document.getElementById('highScore');  // Referensi elemen high score
+const highScoreElement = document.getElementById('highScore');
 const startBtn = document.getElementById('startBtn');
+const menu = document.getElementById('menu');
+const gameOverOverlay = document.getElementById('gameOverOverlay');
+const gameOverText = document.getElementById('gameOverText');
+const finalScore = document.getElementById('finalScore');
+const finalHighScore = document.getElementById('finalHighScore');
+const backBtn = document.getElementById('backBtn');
 
 const gridSize = 20; // Ukuran setiap segmen
 const tileCount = canvas.width / gridSize; // Jumlah tile (20x20)
@@ -11,7 +17,7 @@ let snake = [{x: 10, y: 10}]; // Posisi awal ular
 let food = {x: 15, y: 15}; // Posisi awal makanan
 let dx = 0, dy = 0; // Arah gerakan
 let score = 0;
-let highScore = 0;  // Variabel untuk high score
+let highScore = 0; // Variabel untuk high score
 let gameRunning = false;
 
 // Fungsi load high score dari localStorage
@@ -38,8 +44,7 @@ function gameLoop() {
     moveSnake();
     if (checkCollision()) {
         saveHighScore();  // Update high score saat game over
-        alert('Game Over! Skor: ' + score + ' | High Score: ' + highScore);
-        resetGame();
+        showGameOver();  // Tampilkan overlay game over
         return;
     }
     if (eatFood()) {
@@ -126,8 +131,27 @@ function startGame() {
     gameRunning = true;
     startBtn.disabled = true;
     startBtn.textContent = 'Game Running...';
+    // Transisi: Sembunyikan menu, tampilkan canvas
+    menu.classList.add('hidden');
+    canvas.classList.add('active');
     generateFood();
     gameLoop();
+}
+
+// Fungsi tampilkan game over
+function showGameOver() {
+    gameRunning = false;
+    finalScore.textContent = score;
+    finalHighScore.textContent = highScore;
+    gameOverOverlay.classList.remove('hidden');
+}
+
+// Fungsi kembali ke menu
+function backToMenu() {
+    gameOverOverlay.classList.add('hidden');
+    canvas.classList.remove('active');
+    menu.classList.remove('hidden');
+    resetGame();
 }
 
 // Reset game
@@ -142,9 +166,10 @@ function resetGame() {
     generateFood();
 }
 
-// Event listener untuk tombol start
+// Event listener
 startBtn.addEventListener('click', startGame);
+backBtn.addEventListener('click', backToMenu);
 
 // Inisialisasi awal
-loadHighScore();  // Load high score saat halaman load
+loadHighScore();
 generateFood();
