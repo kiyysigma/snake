@@ -1,7 +1,8 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
-const startBtn = document.getElementById('startBtn');  // Referensi tombol
+const highScoreElement = document.getElementById('highScore');  // Referensi elemen high score
+const startBtn = document.getElementById('startBtn');
 
 const gridSize = 20; // Ukuran setiap segmen
 const tileCount = canvas.width / gridSize; // Jumlah tile (20x20)
@@ -10,14 +11,34 @@ let snake = [{x: 10, y: 10}]; // Posisi awal ular
 let food = {x: 15, y: 15}; // Posisi awal makanan
 let dx = 0, dy = 0; // Arah gerakan
 let score = 0;
-let gameRunning = false;  // Flag untuk cek apakah game sedang berjalan
+let highScore = 0;  // Variabel untuk high score
+let gameRunning = false;
+
+// Fungsi load high score dari localStorage
+function loadHighScore() {
+    const saved = localStorage.getItem('snakeHighScore');
+    if (saved) {
+        highScore = parseInt(saved);
+        highScoreElement.textContent = 'High Score: ' + highScore;
+    }
+}
+
+// Fungsi save high score ke localStorage
+function saveHighScore() {
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('snakeHighScore', highScore);
+        highScoreElement.textContent = 'High Score: ' + highScore;
+    }
+}
 
 // Fungsi utama game loop
 function gameLoop() {
-    if (!gameRunning) return;  // Hentikan jika game tidak berjalan
+    if (!gameRunning) return;
     moveSnake();
     if (checkCollision()) {
-        alert('Game Over! Skor: ' + score);
+        saveHighScore();  // Update high score saat game over
+        alert('Game Over! Skor: ' + score + ' | High Score: ' + highScore);
         resetGame();
         return;
     }
@@ -92,7 +113,7 @@ function draw() {
 
 // Kontrol keyboard
 document.addEventListener('keydown', (e) => {
-    if (!gameRunning) return;  // Hanya respon jika game berjalan
+    if (!gameRunning) return;
     if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
     else if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
     else if (e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
@@ -101,12 +122,12 @@ document.addEventListener('keydown', (e) => {
 
 // Fungsi start game
 function startGame() {
-    if (gameRunning) return;  // Mencegah start ulang
+    if (gameRunning) return;
     gameRunning = true;
-    startBtn.disabled = true;  // Nonaktifkan tombol setelah start
-    startBtn.textContent = 'Game Running...';  // Ubah teks tombol
-    generateFood();  // Pastikan makanan ada
-    gameLoop();  // Mulai loop
+    startBtn.disabled = true;
+    startBtn.textContent = 'Game Running...';
+    generateFood();
+    gameLoop();
 }
 
 // Reset game
@@ -116,13 +137,14 @@ function resetGame() {
     score = 0;
     scoreElement.textContent = 'Skor: 0';
     gameRunning = false;
-    startBtn.disabled = false;  // Aktifkan tombol lagi
-    startBtn.textContent = 'Start Game';  // Reset teks
+    startBtn.disabled = false;
+    startBtn.textContent = 'Start Game';
     generateFood();
 }
 
 // Event listener untuk tombol start
 startBtn.addEventListener('click', startGame);
 
-// Inisialisasi awal (tanpa mulai game)
+// Inisialisasi awal
+loadHighScore();  // Load high score saat halaman load
 generateFood();
