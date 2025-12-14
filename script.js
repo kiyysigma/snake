@@ -1,6 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
+const startBtn = document.getElementById('startBtn');  // Referensi tombol
 
 const gridSize = 20; // Ukuran setiap segmen
 const tileCount = canvas.width / gridSize; // Jumlah tile (20x20)
@@ -9,9 +10,11 @@ let snake = [{x: 10, y: 10}]; // Posisi awal ular
 let food = {x: 15, y: 15}; // Posisi awal makanan
 let dx = 0, dy = 0; // Arah gerakan
 let score = 0;
+let gameRunning = false;  // Flag untuk cek apakah game sedang berjalan
 
 // Fungsi utama game loop
 function gameLoop() {
+    if (!gameRunning) return;  // Hentikan jika game tidak berjalan
     moveSnake();
     if (checkCollision()) {
         alert('Game Over! Skor: ' + score);
@@ -89,11 +92,22 @@ function draw() {
 
 // Kontrol keyboard
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'w' && dy === 0) { dx = 0; dy = -1; }
-    else if (e.key === 's' && dy === 0) { dx = 0; dy = 1; }
-    else if (e.key === 'a' && dx === 0) { dx = -1; dy = 0; }
-    else if (e.key === 'd' && dx === 0) { dx = 1; dy = 0; }
+    if (!gameRunning) return;  // Hanya respon jika game berjalan
+    if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
+    else if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
+    else if (e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
+    else if (e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
 });
+
+// Fungsi start game
+function startGame() {
+    if (gameRunning) return;  // Mencegah start ulang
+    gameRunning = true;
+    startBtn.disabled = true;  // Nonaktifkan tombol setelah start
+    startBtn.textContent = 'Game Running...';  // Ubah teks tombol
+    generateFood();  // Pastikan makanan ada
+    gameLoop();  // Mulai loop
+}
 
 // Reset game
 function resetGame() {
@@ -101,9 +115,14 @@ function resetGame() {
     dx = 0; dy = 0;
     score = 0;
     scoreElement.textContent = 'Skor: 0';
+    gameRunning = false;
+    startBtn.disabled = false;  // Aktifkan tombol lagi
+    startBtn.textContent = 'Start Game';  // Reset teks
     generateFood();
 }
 
-// Mulai game
+// Event listener untuk tombol start
+startBtn.addEventListener('click', startGame);
+
+// Inisialisasi awal (tanpa mulai game)
 generateFood();
-gameLoop();
