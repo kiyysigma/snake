@@ -4,7 +4,7 @@ const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
 const startBtn = document.getElementById('startBtn');
 const menu = document.getElementById('menu');
-const controls = document.getElementById('controls');  // Kontrol tombol
+const controls = document.getElementById('controls');
 const upBtn = document.getElementById('upBtn');
 const downBtn = document.getElementById('downBtn');
 const leftBtn = document.getElementById('leftBtn');
@@ -106,20 +106,59 @@ function generateFood() {
     }
 }
 
-// Gambar canvas
+// Gambar canvas (update untuk desain baru)
 function draw() {
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Gambar ular
-    ctx.fillStyle = '#000';
-    for (let segment of snake) {
-        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+    // Gambar ular dengan desain bulat telur dan gradien
+    for (let i = 0; i < snake.length; i++) {
+        const segment = snake[i];
+        const x = segment.x * gridSize;
+        const y = segment.y * gridSize;
+        const radiusX = gridSize / 2;  // Lebar oval
+        const radiusY = gridSize / 2.5;  // Tinggi oval (lebih pendek untuk telur)
+        
+        // Gradien hijau (muda ke tua)
+        const gradient = ctx.createLinearGradient(x, y, x + gridSize, y + gridSize);
+        gradient.addColorStop(0, '#90EE90');  // Hijau muda
+        gradient.addColorStop(1, '#228B22');  // Hijau tua
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.ellipse(x + radiusX, y + radiusY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Outline hitam tipis
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.stroke();
     }
     
-    // Gambar makanan
-    ctx.fillStyle = '#f00';
-    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    // Gambar apel dengan desain lingkaran dan tangkai
+    const foodX = food.x * gridSize + gridSize / 2;
+    const foodY = food.y * gridSize + gridSize / 2;
+    const radius = gridSize / 2.5;  // Radius lingkaran
+    
+    // Lingkaran merah
+    ctx.fillStyle = '#FF0000';  // Merah
+    ctx.beginPath();
+    ctx.arc(foodX, foodY, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Tangkai hijau
+    ctx.strokeStyle = '#008000';  // Hijau
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(foodX, foodY - radius);
+    ctx.lineTo(foodX, foodY - radius - 8);  // Tangkai panjang 8px
+    ctx.stroke();
+    
+    // Daun kecil di samping tangkai
+    ctx.fillStyle = '#32CD32';  // Hijau terang
+    ctx.beginPath();
+    ctx.ellipse(foodX + 2, foodY - radius - 4, 3, 5, Math.PI / 4, 0, 2 * Math.PI);
+    ctx.fill();
 }
 
 // Kontrol keyboard (untuk desktop)
@@ -171,7 +210,7 @@ function startGame() {
     startBtn.textContent = 'Game Running...';
     menu.classList.add('hidden');
     canvas.classList.add('active');
-    controls.classList.remove('hidden');  // Tampilkan kontrol
+    controls.classList.remove('hidden');  // Tampilkan kontrol (hanya di mobile)
     generateFood();
     gameLoop();
 }
@@ -182,7 +221,7 @@ function showGameOver() {
     finalScore.textContent = score;
     finalHighScore.textContent = highScore;
     gameOverOverlay.classList.remove('hidden');
-    controls.classList.add('hidden');  // Sembunyikan kontrol saat game over
+    controls.classList.add('hidden');
 }
 
 // Fungsi kembali ke menu
