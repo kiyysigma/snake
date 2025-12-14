@@ -11,6 +11,26 @@ body {
     margin-bottom: 10px;
 }
 
+#startBtn {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#startBtn:hover {
+    background-color: #45a049;
+}
+
+#startBtn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
 #gameCanvas {
     border: 2px solid #000;
     background-color: #fff;
