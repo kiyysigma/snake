@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Untuk responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Ular Sederhana</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,10 +11,16 @@
         <h1>Game Ular</h1>
         <div id="score">Skor: 0</div>
         <div id="highScore">High Score: 0</div>
-        <button id="startBtn">Start Game</button>
+        <div id="levelSelect">
+            <h3>Pilih Level:</h3>
+            <button id="easyBtn">Easy</button>
+            <button id="normalBtn">Normal</button>
+            <button id="hardBtn">Hard</button>
+        </div>
+        <button id="startBtn" disabled>Start Game</button>
     </div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div id="controls" class="hidden">  <!-- Kontrol tombol untuk mobile -->
+    <div id="controls" class="hidden">
         <button id="upBtn">↑</button>
         <div>
             <button id="leftBtn">←</button>
