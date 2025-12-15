@@ -136,7 +136,7 @@ body {
 @media (max-width: 768px) {
     body {
         padding: 10px;
-        background-image: url('bg-mobile.jpg');  /* Gambar khusus mobile */
+        background-image: url('bg-desktop.gif');  /* Gambar khusus mobile */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
