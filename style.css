@@ -30,6 +30,34 @@ body {
     margin-bottom: 10px;
 }
 
+#levelSelect {
+    margin-bottom: 15px;
+}
+
+#levelSelect h3 {
+    margin: 0 0 10px 0;
+}
+
+#levelSelect button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    background-color: #FFC107;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#levelSelect button:hover {
+    background-color: #FF8F00;
+}
+
+#levelSelect button.selected {
+    background-color: #FF5722;
+    color: white;
+}
+
 #startBtn {
     padding: 10px 20px;
     font-size: 18px;
@@ -119,7 +147,7 @@ body {
 /* Sembunyikan kontrol di desktop */
 @media (min-width: 769px) {
     #controls {
-        display: none !important;  /* Tersembunyi di desktop */
+        display: none !important;
     }
 }
 
