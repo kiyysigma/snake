@@ -2,6 +2,10 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
+const levelSelect = document.getElementById('levelSelect');
+const easyBtn = document.getElementById('easyBtn');
+const normalBtn = document.getElementById('normalBtn');
+const hardBtn = document.getElementById('hardBtn');
 const startBtn = document.getElementById('startBtn');
 const menu = document.getElementById('menu');
 const controls = document.getElementById('controls');
@@ -15,8 +19,7 @@ const finalScore = document.getElementById('finalScore');
 const finalHighScore = document.getElementById('finalHighScore');
 const backBtn = document.getElementById('backBtn');
 
-const gridSize = 20; // Ukuran setiap segmen
-const tileCount = canvas.width / gridSize; // Jumlah tile (20x20)
+const gridSize = 20; // Ukuran setiap segmen (tetap)
 
 let snake = [{x: 10, y: 10}]; // Posisi awal ular
 let food = {x: 15, y: 15}; // Posisi awal makanan
@@ -25,6 +28,10 @@ let score = 0;
 let highScore = 0; // Variabel untuk high score
 let gameRunning = false;
 let touchStartX = 0, touchStartY = 0;  // Untuk swipe
+let currentLevel = null;  // Level saat ini: 'easy', 'normal', 'hard'
+let canvasSize = 400;  // Ukuran canvas default
+let gameSpeed = 100;  // Kecepatan default (ms)
+let tileCount = canvasSize / gridSize;  // Jumlah tile
 
 // Fungsi load high score dari localStorage
 function loadHighScore() {
@@ -44,6 +51,33 @@ function saveHighScore() {
     }
 }
 
+// Fungsi pilih level
+function selectLevel(level) {
+    currentLevel = level;
+    // Reset selected class
+    easyBtn.classList.remove('selected');
+    normalBtn.classList.remove('selected');
+    hardBtn.classList.remove('selected');
+    // Set selected
+    if (level === 'easy') {
+        easyBtn.classList.add('selected');
+        canvasSize = 500;
+        gameSpeed = 150;
+    } else if (level === 'normal') {
+        normalBtn.classList.add('selected');
+        canvasSize = 400;
+        gameSpeed = 100;
+    } else if (level === 'hard') {
+        hardBtn.classList.add('selected');
+        canvasSize = 300;
+        gameSpeed = 50;
+    }
+    tileCount = canvasSize / gridSize;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+    startBtn.disabled = false;  // Enable start setelah pilih level
+}
+
 // Fungsi utama game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -60,7 +94,7 @@ function gameLoop() {
         growSnake();
     }
     draw();
-    setTimeout(gameLoop, 100); // Kecepatan game (ms)
+    setTimeout(gameLoop, gameSpeed);  // Kecepatan berdasarkan level
 }
 
 // Gerakkan ular
@@ -202,53 +236,4 @@ canvas.addEventListener('touchend', (e) => {
     }
 });
 
-// Fungsi start game
-function startGame() {
-    if (gameRunning) return;
-    gameRunning = true;
-    startBtn.disabled = true;
-    startBtn.textContent = 'Game Running...';
-    menu.classList.add('hidden');
-    canvas.classList.add('active');
-    controls.classList.remove('hidden');  // Tampilkan kontrol (hanya di mobile)
-    generateFood();
-    gameLoop();
-}
-
-// Fungsi tampilkan game over
-function showGameOver() {
-    gameRunning = false;
-    finalScore.textContent = score;
-    finalHighScore.textContent = highScore;
-    gameOverOverlay.classList.remove('hidden');
-    controls.classList.add('hidden');
-}
-
-// Fungsi kembali ke menu
-function backToMenu() {
-    gameOverOverlay.classList.add('hidden');
-    canvas.classList.remove('active');
-    menu.classList.remove('hidden');
-    controls.classList.add('hidden');
-    resetGame();
-}
-
-// Reset game
-function resetGame() {
-    snake = [{x: 10, y: 10}];
-    dx = 0; dy = 0;
-    score = 0;
-    scoreElement.textContent = 'Skor: 0';
-    gameRunning = false;
-    startBtn.disabled = false;
-    startBtn.textContent = 'Start Game';
-    generateFood();
-}
-
-// Event listener
-startBtn.addEventListener('click', startGame);
-backBtn.addEventListener('click', backToMenu);
-
-// Inisialisasi awal
-loadHighScore();
-generateFood();
+// Fungsi
